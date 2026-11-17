@@ -8,6 +8,21 @@ Laboratório acadêmico de Sistemas de Tempo Real (PPGEE/UFAM), desenvolvido par
 
 > Projeto didático independente. Logs emulados não constituem prova de comportamento temporal em hardware real ou medição de WCET.
 
+## Roteiro de referência da UFAM
+
+Este repositório é baseado no documento fornecido pelo aluno **“Roteiro de Laboratório: Configuração do Ambiente Zephyr RTOS — Atividade 1.1”** (PPGEE/UFAM, PGENE537, 2026.2), professor **Lucas Carvalho Cordeiro**, monitor **Janislley Oliveira de Sousa**.
+
+O roteiro original, de quatro páginas, prescreve:
+1. Dependências e ambiente Ubuntu 24.04, Python, `west`, módulos e Zephyr SDK (seção 5).
+2. VS Code e terminal integrado (seção 6).
+3. Hello World na XIAO nRF52840, compilação e firmware UF2 (seção 7).
+4. Hello World na ESP32-S3 DevKitC, gravação por `west flash` (seção 8).
+5. Coleta de evidências e resolução de problemas (seções 9–10).
+
+**Adaptação didática, não presente no roteiro:** por ausência das placas físicas, substituímos compilação/gravação física por `qemu_x86` + `west build -t run`. Os laboratórios de produtor-consumidor e escalonamento são extensões autorais para prática de threads, sincronização e análise temporal. Os experimentos em QEMU não validam prazos em hardware real.
+
+**Nota:** o PDF original foi fornecido na conversa, mas não está armazenado como arquivo neste repositório.
+
 ## Objetivos
 1. Executar o Zephyr RTOS em uma placa virtual QEMU.
 2. Experimentar comunicação por filas entre threads.
