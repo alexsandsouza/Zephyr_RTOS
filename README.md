@@ -122,9 +122,25 @@ west build -d ~/zephyrproject/build/lab02 -t run
 
 **Limitações importantes:** a aplicação utiliza espera até o próximo instante planejado, mas o instante efetivo de liberação apresenta jitter; atraso e resolução dependem do QEMU, relógio e carga. Tempo de resposta observado não é WCET, nem prova de que todas as ativações futuras cumprirão prazo. Os logs podem ser impressos fora da ordem intuitiva devido à preempção; use `job_id` para correlacioná-los. Para aprofundar as diferenças entre tempo de liberação planejado e real, também recomendamos instrumentar o atraso desde a origem externa do evento.
 
-## Experimento 03: cooperação vs. preempção
+## Experimento 03: preempção vs. cooperação (v2)
 
-No arquivo `labs/03-escalonamento/src/main.c`, altere `SCENARIO_COOPERATIVE` entre `0` e `1`, recompile e compare os logs. No cenário cooperativo, uma thread que ocupa a CPU sem ceder pode atrasar outra, ainda que esta tenha prioridade relativamente mais alta no grupo preemptivo. O ensaio usa ocupação artificial da CPU para facilitar observação; resultados dependem da emulação.
+A aplicação usa um `k_timer` para liberar a thread B a partir de uma interrupção enquanto a thread A ocupa a CPU. A thread B possui prioridade preemptiva 2 e A possui prioridade preemptiva 4 (cenário A) ou cooperativa -1 (cenário B). Os instantes de **liberação**, **início** e **conclusão** são capturados via `k_cycle_get_64()`, e as diferenças convertidas para microssegundos.
+
+Execute no terminal Ubuntu com o QEMU:
+
+```bash
+source ~/zephyrproject/.venv/bin/activate
+cd ~/zephyrproject/Zephyr_RTOS
+git pull
+west build -p always -b qemu_x86 labs/03-escalonamento -d ~/zephyrproject/build/lab03
+west build -d ~/zephyrproject/build/lab03 -t run
+```
+
+Por padrão, `SCENARIO_COOPERATIVE=0` (preemptivo). Para comparar com cooperação, encerre o QEMU com `Ctrl+C`, edite `labs/03-escalonamento/src/main.c` para `#define SCENARIO_COOPERATIVE 1`, recompile com o mesmo `west build -p always ...` e execute novamente.
+
+Compare no resumo: `B_release`, `B_inicio`, `B_fim`, `B_resposta`, `status` e `B_iniciou_antes_de_A_terminar`. O deadline relativo didático de B é 30 ms. Em cenário preemptivo, esperamos B executar antes de A concluir; em cenário cooperativo, B deverá esperar A liberar a CPU, mesmo tendo prioridade relativamente alta no grupo preemptivo.
+
+**Limitações:** o timer marca a liberação real no callback, não o instante absoluto originalmente solicitado. Logs e tempos em QEMU são observações, não prova formal de WCET nem de deadlines em hardware. Não foi executada compilação automática após esta edição; valide os dois cenários no Ubuntu.
 
 ## Evidências sugeridas
 
