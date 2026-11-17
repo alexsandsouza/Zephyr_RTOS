@@ -11,7 +11,7 @@
  * Thread B tem prioridade preemptiva 2 em ambos os cenarios.
  * O timer libera B enquanto A executa um trecho sem yield/sleep.
  */
-#define SCENARIO_COOPERATIVE 0
+#define SCENARIO_COOPERATIVE 1
 
 #define B_RELEASE_DELAY_MS 20
 #define A_WORK_US 100000
