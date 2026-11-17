@@ -1,0 +1,8 @@
+build/
+build*/
+**/build/
+.venv/
+__pycache__/
+.vscode/
+*.log
+.DS_Store
