@@ -10,7 +10,7 @@ Laboratório acadêmico de Sistemas de Tempo Real (PPGEE/UFAM), desenvolvido par
 
 ## Roteiro de referência da UFAM
 
-Este repositório é baseado no documento fornecido pelo aluno **“Roteiro de Laboratório: Configuração do Ambiente Zephyr RTOS — Atividade 1.1”** (PPGEE/UFAM, PGENE537, 2026.2), professor **Lucas Carvalho Cordeiro**, monitor **Janislley Oliveira de Sousa**.
+Este repositório é baseado no documento fornecido pelo aluno **“Roteiro de Laboratório: Configuração do Ambiente Zephyr RTOS - Atividade 1.1”** (PPGEE/UFAM, PGENE537, 2026.2), professor **Lucas Carvalho Cordeiro**, monitor **Janislley Oliveira de Sousa**.
 
 O roteiro original, de quatro páginas, prescreve:
 1. Dependências e ambiente Ubuntu 24.04, Python, `west`, módulos e Zephyr SDK (seção 5).
