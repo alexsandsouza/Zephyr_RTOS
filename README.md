@@ -99,11 +99,28 @@ west build -d build/lab03 -t run
 
 Para sair do QEMU: **Ctrl+A**, depois **X**.
 
-## Experimento 02: produtor-consumidor
+## Experimento 02: produtor-consumidor (v2)
 
-O produtor emite 30 leituras. O consumidor avalia o limiar e uma thread atuadora registra o tempo de resposta **da liberação original até a atuação**. Mensagens com o mesmo `job_id` mantêm o `release_ms` original. As filas têm capacidade finita; inserções não bloqueantes que falham são contadas como descarte.
+O produtor planeja 30 liberações espaçadas em 20 ms, com referência a um instante inicial, e envia leituras para a thread de decisão. A thread atuadora registra a conclusão lógica do LED virtual. Cada mensagem preserva seu `job_id` e o timestamp de liberação original em ciclos. O programa converte **diferenças de ciclos** em microssegundos, para observar tempos menores que 1 ms.
 
-**Importante:** o intervalo aproximado de 20 ms do produtor usa `k_sleep()`, não um temporizador de liberações absolutas; há jitter e deriva. O experimento demonstra instrumentação, não periodicidade rigorosa.
+- `RELEASE`: job liberado e inserido na fila, com instante relativo e jitter de liberação.
+- `FINISH`: atuação concluída, tempo de resposta em microssegundos e status frente ao deadline relativo de 20 ms.
+- `DROP_LEITURA` e `DROP_COMANDO`: descartes por fila cheia.
+- `RESUMO`: número de jobs concluídos, descartes, deadlines perdidos, pior tempo observado, maior jitter e teste de consistência (`concluidos + descartes == 30`).
+
+As threads consumidora e atuadora finalizam mediante mensagens sentinela. **O QEMU permanece ligado após o resumo**, portanto pressione `Ctrl+C` para encerrar o emulador. Não há encerramento automático do processo QEMU.
+
+Para executar a versão atualizada na máquina local:
+
+```bash
+source ~/zephyrproject/.venv/bin/activate
+cd ~/zephyrproject/Zephyr_RTOS
+git pull
+west build -p always -b qemu_x86 labs/02-produtor-consumidor -d ~/zephyrproject/build/lab02
+west build -d ~/zephyrproject/build/lab02 -t run
+```
+
+**Limitações importantes:** a aplicação utiliza espera até o próximo instante planejado, mas o instante efetivo de liberação apresenta jitter; atraso e resolução dependem do QEMU, relógio e carga. Tempo de resposta observado não é WCET, nem prova de que todas as ativações futuras cumprirão prazo. Os logs podem ser impressos fora da ordem intuitiva devido à preempção; use `job_id` para correlacioná-los. Para aprofundar as diferenças entre tempo de liberação planejado e real, também recomendamos instrumentar o atraso desde a origem externa do evento.
 
 ## Experimento 03: cooperação vs. preempção
 
